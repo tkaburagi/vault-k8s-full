@@ -1,0 +1,4 @@
+helm/vault-values.yaml
+.vault-tokens
+img-encoded
+encrypted-image-k8s

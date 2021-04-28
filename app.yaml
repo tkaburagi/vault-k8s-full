@@ -1,0 +1,58 @@
+# app.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demoapp
+  labels:
+    app: vault-agent-demo
+spec:
+  selector:
+    matchLabels:
+      app: vault-agent-demo
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/agent-inject-token: "true"
+        vault.hashicorp.com/agent-inject-secret-awscreds: "aws/creds/read-s3"
+        vault.hashicorp.com/role: "read-s3-transit"
+        vault.hashicorp.com/agent-inject-template-awscreds: |
+          {{ with $secrets := secret "aws/creds/read-s3" }}
+          {{ $secrets | toJSON }}
+          {{ end }}
+      labels:
+        app: vault-agent-demo
+    spec:
+      serviceAccountName: demoapp
+      containers:
+      - name: demoapp
+        image: gcr.io/se-kabu/vault-transit-aws-demo-k8s:latest
+        env:
+        - name: SECRET_PATH_AWS
+          value: "/vault/secrets/awscreds"
+        - name: SECRET_PATH_TOKEN
+          value: "/vault/secrets/token"         
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: demoapp
+  labels:
+    app: vault-agent-demo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demoapp-lb
+  namespace: "default"
+  labels:
+    app: "vault-agent-demo"
+spec:
+  ports:
+    - protocol: "TCP"
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: "vault-agent-demo"
+  type: "LoadBalancer"
