@@ -1,3 +1,40 @@
+```shell script
+vault secrets enable transit
+vault write transit/keys/aes256
+```
+
+GUIで暗号化
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
+      "Resource": "arn:aws:s3:::playground-kabu/*"
+    }
+  ]
+}
+```
+
+```hcl
+path "aws/creds/read-s3" {
+  capabilities = [ "read" ]
+}
+
+path "aws/roles/*" {
+  capabilities = [ "list", "read" ]
+}
+
+path "transit/*" {
+  capabilities = [ "read", "create", "list", "update", "delete" ]
+}
+```
+
 ```
 vault policy write read-s3-transit read-s3-transit.hcl
 ```
@@ -5,6 +42,8 @@ vault policy write read-s3-transit read-s3-transit.hcl
 
 ```
 kubectl exec -ti vault-0 /bin/sh
+
+vault operator init
 
 vault auth enable kubernetes
 
@@ -19,3 +58,5 @@ vault write auth/kubernetes/role/read-s3-transit \
    policies=read-s3-transit  \
    ttl=1h
 ```
+
+[annotaions](https://www.vaultproject.io/docs/platform/k8s/injector/annotations)
