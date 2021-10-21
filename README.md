@@ -3,7 +3,8 @@ vault secrets enable transit
 vault write transit/keys/aes256
 ```
 
-GUIで暗号化
+* Encrypt the picture
+* Save your picture to S3 object storage *Sorry, the name of the buckey should be `playground-kabu` and `demo-images-kabu`. This is hardcoded in the source*
 
 ```json
 {
