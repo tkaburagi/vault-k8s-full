@@ -17,6 +17,7 @@ spec:
         vault.hashicorp.com/agent-inject-token: "true"
         vault.hashicorp.com/agent-inject-secret-awscreds: "aws/creds/read-s3"
         vault.hashicorp.com/role: "read-s3-transit"
+        vault.hashicorp.com/agent-revoke-on-shutdown: "true"
         vault.hashicorp.com/agent-inject-template-awscreds: |
           {{ with $secrets := secret "aws/creds/read-s3" }}
           {{ $secrets | toJSON }}

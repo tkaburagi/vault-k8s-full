@@ -1,10 +1,15 @@
+![](img/1.png)
+![](img/2.png)
+![](img/3.png)
+
+
 ```shell script
 vault secrets enable transit
 vault write transit/keys/aes256
 ```
 
 * Encrypt the picture
-* Save your picture to S3 object storage *Sorry, the name of the buckey should be `playground-kabu` and `demo-images-kabu`. This is hardcoded in the source*
+* Save your picture to S3 object storage. Sorry, the name of the buckey should be `playground-kabu` and `demo-images-kabu` and the name of file should be `encrypted-image`. These are hardcoded in the source
 
 ```json
 {
@@ -59,5 +64,12 @@ vault write auth/kubernetes/role/read-s3-transit \
    policies=read-s3-transit  \
    ttl=1h
 ```
+
+## Test
+
+Browse: 
+  * `/playground-kabu`
+  * `/demo-images-kabu`
+  * 
 
 [annotaions](https://www.vaultproject.io/docs/platform/k8s/injector/annotations)
